@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getGitHubLoginUrl } from '$lib/cognito';
+  import { getGoogleLoginUrl } from '$lib/cognito';
 </script>
 
 <h1>Log in to cohibox</h1>
-<a href={getGitHubLoginUrl()}>
+<a href={getGoogleLoginUrl()}>
   <button>Continue with Google</button>
 </a>
