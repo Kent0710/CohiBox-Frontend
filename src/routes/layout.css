@@ -1,2 +1,7 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+html {
+    background: #050510;
+    height: 100dvh;
+}

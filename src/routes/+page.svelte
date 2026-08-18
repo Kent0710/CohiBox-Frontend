@@ -12,8 +12,13 @@
 	let error = $state('');
 
 	async function handleSignOut() {
-		await fetch('/auth/signout', { method: 'POST' });
-		goto('/');
+		const response = await fetch('/auth/signout', {
+			method: 'POST'
+		});
+
+		if (response.ok) {
+			await goto('/', { invalidateAll: true });
+		}
 	}
 
 	function handleRun() {
@@ -29,7 +34,7 @@
 			return;
 		}
 
-		console.log('Running:', repoUrl);
+		goto('/run?repo=' + encodeURIComponent(repoUrl.trim()));
 	}
 </script>
 

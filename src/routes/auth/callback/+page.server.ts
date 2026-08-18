@@ -42,5 +42,5 @@ export const load: PageServerLoad = async ({ url, cookies, fetch }) => {
 		maxAge: 60 * 60
 	});
 
-	throw redirect(303, '/');
+	throw redirect(303, '/run');
 };
