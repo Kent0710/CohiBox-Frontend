@@ -7,7 +7,6 @@ import {
 const REDIRECT_URI = PUBLIC_COGNITO_REDIRECT_URI;
 
 export function getGoogleLoginUrl(): string {
-  console.log('COGNITO REDIRECT:', REDIRECT_URI);
   const params = new URLSearchParams({
     client_id: PUBLIC_COGNITO_CLIENT_ID,
     response_type: 'code',
