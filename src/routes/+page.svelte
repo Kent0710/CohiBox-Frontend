@@ -34,6 +34,13 @@
 			return;
 		}
 
+		if (!data.email) {
+			// Save repo URL in a cookie so we can restore it after login
+			document.cookie = `pending_repo=${encodeURIComponent(repoUrl.trim())}; path=/; max-age=300`;
+			window.location.href = getGoogleLoginUrl();
+			return;
+		}
+
 		goto('/run?repo=' + encodeURIComponent(repoUrl.trim()));
 	}
 </script>
