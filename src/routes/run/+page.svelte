@@ -11,7 +11,7 @@
 	let repoUrl = $state($page.url.searchParams.get('repo') ?? '');
 	let status = $state<'idle' | 'starting' | 'running' | 'stopped' | 'error'>('idle');
 	let statusMessage = $state('Ready.');
-	let terminalLines = $state<string[]>([]);
+	let terminalOutput = $state('');
 	let inputValue = $state('');
 	let inputDisabled = $state(true);
 	let socket: WebSocket | null = null;
@@ -43,14 +43,14 @@
 
 	// --- Terminal helpers ---
 	function appendTerminal(text: string) {
-		terminalLines = [...terminalLines, text];
+		terminalOutput += text;
 		setTimeout(() => {
 			if (terminalEl) terminalEl.scrollTop = terminalEl.scrollHeight;
 		}, 0);
 	}
 
 	function clearTerminal() {
-		terminalLines = [];
+		terminalOutput = '';
 	}
 
 	// --- WebSocket ---
@@ -138,7 +138,7 @@
 		if (socket?.readyState !== WebSocket.OPEN) return;
 
 		const input = inputValue;
-		appendTerminal(`> ${input}`);
+		appendTerminal(input + '\n');
 		socket.send(JSON.stringify({ type: 'input', input: input + '\n' }));
 		inputValue = '';
 	}
@@ -266,14 +266,12 @@
 
 			<!-- Output -->
 			<div class="terminal-body" bind:this={terminalEl}>
-				{#if terminalLines.length === 0}
+				{#if terminalOutput === ''}
 					<span class="terminal-placeholder">
 						{status === 'idle' ? 'Paste a GitHub repo URL and press Run.' : 'Starting...'}
 					</span>
 				{:else}
-					{#each terminalLines as line}
-						<div class="terminal-line">{line}</div>
-					{/each}
+					<pre class="terminal-pre">{terminalOutput}</pre>
 				{/if}
 			</div>
 
@@ -644,23 +642,26 @@
 		flex: 1;
 		min-height: 0;
 		overflow-y: auto;
+		overflow-x: auto;
 		padding: 1.1rem 1.25rem;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(168, 168, 232, 0.15) transparent;
+	}
+
+	.terminal-pre {
+		margin: 0;
+		padding: 0;
 		font-family: 'JetBrains Mono', 'Fira Mono', ui-monospace, Menlo, monospace;
 		font-size: 0.82rem;
 		line-height: 1.65;
 		color: #d4d4e8;
-		scrollbar-width: thin;
-		scrollbar-color: rgba(168, 168, 232, 0.15) transparent;
+		white-space: pre;
+		word-break: normal;
 	}
 
 	.terminal-placeholder {
 		color: rgba(232, 232, 240, 0.18);
 		font-style: italic;
-	}
-
-	.terminal-line {
-		white-space: pre-wrap;
-		word-break: break-word;
 	}
 
 	/* Input row */
